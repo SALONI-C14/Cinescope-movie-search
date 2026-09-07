@@ -1,0 +1,10 @@
+.searchbar{display:flex;gap:8px;margin-top:12px}
+.searchbar input{flex:1;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:var(--glass);color:inherit}
+.searchbar button{padding:10px 16px;border-radius:8px;border:none;background:var(--accent);color:white;cursor:pointer}
+.searchbar input:focus{outline:2px solid rgba(229,9,20,0.25)}
+.visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+
+@media (max-width:480px){
+  .searchbar{flex-direction:column}
+  .searchbar button{width:100%}
+}

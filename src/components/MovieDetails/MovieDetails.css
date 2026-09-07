@@ -1,0 +1,15 @@
+.modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(2,6,10,0.7);padding:24px;z-index:60}
+.modal-content{background:var(--card);border-radius:12px;max-width:900px;width:100%;position:relative;padding:18px}
+.close{position:absolute;right:12px;top:8px;border:none;background:transparent;color:var(--muted);font-size:22px;cursor:pointer}
+.details-inner{display:flex;gap:18px}
+.details-poster img{width:260px;height:380px;object-fit:cover;border-radius:8px}
+.poster-placeholder{width:260px;height:380px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));color:var(--muted);border-radius:8px}
+.details-body h2{margin:0 0 6px}
+.muted{color:var(--muted);font-weight:400}
+.meta{color:var(--muted);margin-bottom:12px}
+.plot{line-height:1.4}
+
+@media (max-width:768px){
+  .details-inner{flex-direction:column}
+  .details-poster img,.poster-placeholder{width:100%;height:auto}
+}
