@@ -1,7 +1,9 @@
 const BASE = 'https://www.omdbapi.com/'
 
 function getApiKey(){
-  const key = import.meta.env.VITE_OMDB_API_KEY
+  // Allow fallback to process.env for test environments where import.meta.env
+  // may not be populated by Vite.
+  const key = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_OMDB_API_KEY) || process.env.VITE_OMDB_API_KEY
   if(!key){
     throw new Error('Missing API key. Please set VITE_OMDB_API_KEY in your .env file.')
   }
