@@ -20,11 +20,21 @@ a{color:inherit}
 
 button{font-family:inherit}
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible{
+  outline:3px solid #ff6570;
+  outline-offset:3px;
+}
+
 .container{
   max-width:1100px;
   margin:0 auto;
   padding:24px;
 }
+
+@media (max-width:768px){.container{padding:18px}}
+@media (max-width:425px){.container{padding:14px}}
 
 /* Responsive grid helper */
 .grid{

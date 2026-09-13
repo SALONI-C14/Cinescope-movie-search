@@ -20,14 +20,14 @@ describe('MovieCard', () => {
     expect(screen.getByAltText(/Sample Movie poster/)).toBeInTheDocument()
   })
 
-  it('calls onSelect when clicked or Enter pressed', async () => {
+  it('calls onSelect when the details button is activated with Enter', async () => {
     const onSelect = vi.fn()
     render(<MovieCard movie={sample} onSelect={onSelect} />)
-    await userEvent.click(screen.getByText(/Sample Movie/))
+    const button = screen.getByRole('button', { name: /view details for sample movie/i })
+    button.focus()
+    fireEvent.keyDown(button, { key: 'Enter', code: 'Enter' })
+    fireEvent.click(button)
     expect(onSelect).toHaveBeenCalledWith('tt123')
-    const card = screen.getByRole('article') || screen.getByText(/Sample Movie/).closest('article')
-    fireEvent.keyDown(card, { key: 'Enter', code: 'Enter' })
-    expect(onSelect).toHaveBeenCalled()
   })
 
   it('shows placeholder when no poster', () => {

@@ -1,22 +1,26 @@
-import React, {useEffect} from 'react'
+import React, { useEffect, useRef } from 'react'
 import './MovieDetails.css'
 import Loading from '../Loading/Loading'
 
 export default function MovieDetails({movie,loading,error,onClose}){
+  const closeButtonRef = useRef(null)
   useEffect(()=>{
     function onKey(e){
       if(e.key === 'Escape') onClose()
     }
-    if(movie || loading || error) document.addEventListener('keydown', onKey)
+    if(movie || loading || error) {
+      document.addEventListener('keydown', onKey)
+      closeButtonRef.current?.focus()
+    }
     return ()=> document.removeEventListener('keydown', onKey)
   },[movie,loading,error,onClose])
 
   if(!movie && !loading && !error) return null
 
   return (
-    <div className="modal" role="dialog" aria-modal="true" aria-label={movie ? movie.title : 'Movie details'} onClick={onClose}>
-      <div className="modal-content" onClick={e=>e.stopPropagation()}>
-        <button className="close" onClick={onClose} aria-label="Close">×</button>
+    <div className="modal" role="presentation" onMouseDown={onClose}>
+      <section className="modal-content" role="dialog" aria-modal="true" aria-label={movie ? `${movie.title} details` : 'Movie details'} onMouseDown={e=>e.stopPropagation()}>
+        <button ref={closeButtonRef} className="close" type="button" onClick={onClose} aria-label="Close movie details">×</button>
         {loading && <Loading />}
         {error && <div className="details-error">{error}</div>}
         {movie && (
@@ -37,7 +41,7 @@ export default function MovieDetails({movie,loading,error,onClose}){
             </div>
           </div>
         )}
-      </div>
+      </section>
     </div>
   )
 }

@@ -28,12 +28,12 @@ describe('SearchBar', () => {
     expect(onSearch).toHaveBeenCalled()
   })
 
-  it('calls onSearch when Enter is pressed', () => {
+  it('calls onSearch when the search form is submitted', () => {
     const onSearch = vi.fn()
     const onChange = vi.fn()
     render(<SearchBar value="" onChange={onChange} onSearch={onSearch} />)
     const input = screen.getByPlaceholderText(/Search for movies/i)
-    fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' })
+    fireEvent.submit(input.closest('form'))
     expect(onSearch).toHaveBeenCalled()
   })
 })

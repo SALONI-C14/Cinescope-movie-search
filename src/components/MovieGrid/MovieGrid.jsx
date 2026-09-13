@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { memo } from 'react'
 import MovieCard from '../MovieCard/MovieCard'
 import './MovieGrid.css'
 
-export default function MovieGrid({movies,onSelect}){
+function MovieGrid({movies,onSelect}){
   return (
     <div className="movie-grid">
       {movies.map(m => (
@@ -11,3 +11,5 @@ export default function MovieGrid({movies,onSelect}){
     </div>
   )
 }
+
+export default memo(MovieGrid)

@@ -1,13 +1,14 @@
-import React, { useState } from 'react'
+import React, { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import Header from './components/Header/Header'
 import SearchBar from './components/SearchBar/SearchBar'
 import MovieGrid from './components/MovieGrid/MovieGrid'
 import Loading from './components/Loading/Loading'
 import ErrorMessage from './components/ErrorMessage/ErrorMessage'
 import EmptyState from './components/EmptyState/EmptyState'
-import MovieDetails from './components/MovieDetails/MovieDetails'
 import { searchMovies, getMovieDetails } from './services/movieApi'
 import './App.css'
+
+const MovieDetails = lazy(() => import('./components/MovieDetails/MovieDetails'))
 
 export default function App(){
   const [searchTerm, setSearchTerm] = useState('')
@@ -18,8 +19,9 @@ export default function App(){
   const [selectedMovie, setSelectedMovie] = useState(null)
   const [detailsLoading, setDetailsLoading] = useState(false)
   const [detailsError, setDetailsError] = useState(null)
+  const detailsCache = useRef(new Map())
 
-  async function handleSearch(term){
+  const handleSearch = useCallback(async (term) => {
     const trimmed = term.trim()
     if(!trimmed){
       setError('Please enter a movie name to search.')
@@ -37,26 +39,28 @@ export default function App(){
     }finally{
       setLoading(false)
     }
-  }
+  }, [])
 
-  async function openDetails(imdbID){
+  const openDetails = useCallback(async (imdbID) => {
     setSelectedMovie(null)
     setDetailsError(null)
     setDetailsLoading(true)
     try{
-      const details = await getMovieDetails(imdbID)
+      const cachedDetails = detailsCache.current.get(imdbID)
+      const details = cachedDetails || await getMovieDetails(imdbID)
+      if (!cachedDetails) detailsCache.current.set(imdbID, details)
       setSelectedMovie(details)
     }catch(e){
       setDetailsError(e.message || 'Failed to load movie details.')
     }finally{
       setDetailsLoading(false)
     }
-  }
+  }, [])
 
-  function closeDetails(){
+  const closeDetails = useCallback(() => {
     setSelectedMovie(null)
     setDetailsError(null)
-  }
+  }, [])
 
   return (
     <div>
@@ -73,7 +77,7 @@ export default function App(){
           onSearch={() => handleSearch(searchTerm)}
         />
 
-        <section className="results">
+        <section className="results" aria-label="Movie search results" aria-live="polite">
           {loading && <Loading />}
           {error && <ErrorMessage message={error} onRetry={() => handleSearch(searchTerm)} />}
           {!loading && !error && movies.length === 0 && (
@@ -85,12 +89,11 @@ export default function App(){
         </section>
       </main>
 
-      <MovieDetails
-        movie={selectedMovie}
-        loading={detailsLoading}
-        error={detailsError}
-        onClose={closeDetails}
-      />
+      {(selectedMovie || detailsLoading || detailsError) && (
+        <Suspense fallback={<div className="dialog-loading" role="status">Loading movie details…</div>}>
+          <MovieDetails movie={selectedMovie} loading={detailsLoading} error={detailsError} onClose={closeDetails} />
+        </Suspense>
+      )}
 
       <footer className="container footer">
         <small>Built with OMDb API • CineScope</small>

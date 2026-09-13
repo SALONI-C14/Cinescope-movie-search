@@ -16,7 +16,7 @@ describe('MovieGrid', () => {
     render(<MovieGrid movies={movies} onSelect={onSelect} />)
     expect(screen.getByText('First')).toBeInTheDocument()
     expect(screen.getByText('Second')).toBeInTheDocument()
-    await userEvent.click(screen.getByText('Second'))
+    await userEvent.click(screen.getByRole('button', { name: /view details for second/i }))
     expect(onSelect).toHaveBeenCalledWith('b2')
   })
 })
